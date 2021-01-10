@@ -1,0 +1,9 @@
+controller_list:
+  - name: fake_printer_group_controller
+    joints:
+      - base_link_to_extruder_sublink1
+      - base_link_to_extruder_sublink2
+      - base_link_to_extruder_link
+initial:  # Define initial robot poses.
+  - group: printer_group
+    pose: init_pose

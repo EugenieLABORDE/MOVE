@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<robot name="printer" xmlns:xacro="http://www.ros.org/wiki/xacro">
+<xacro:property name="plate_height" value="0.25" />
+<xacro:property name="plate_lenght" value="0.025" />
+<xacro:property name="extruder_radius" value="0.01" />
+<xacro:property name="extruder_length" value="0.05" />
+<xacro:property name="lower_limit" value="0.35" />
+
+
+  <link name="base_link">
+    <visual>
+        <geometry>
+            <mesh filename="package://move_printer/urdf/printer.dae"/>
+        </geometry>
+        <origin rpy="${-pi/2} 0 0" xyz="0 0 0"/>
+    </visual>
+  </link>
+
+  <link name='extruder_sublink1'/>
+  <link name='extruder_sublink2'/>
+
+  <link name="extruder_link">
+    <visual>
+      <geometry>
+        <cylinder length="${extruder_length}" radius="${extruder_radius}"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0 0 ${extruder_length/2}"/> 
+      <material name = "blue">
+        <color rgba="0 0 1.0 0"/>
+      </material>
+    </visual>
+  </link>
+
+  <joint name="base_link_to_extruder_sublink1" type="prismatic">
+    <parent link="base_link"/>
+    <child link="extruder_sublink1"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <axis xyz="1.0 0 0" />
+    <limit effort="1000" velocity="0.1" lower="${-plate_height/2}" upper="${plate_height/2}"/>
+  </joint>
+
+
+  <joint name="base_link_to_extruder_sublink2" type="prismatic">
+    <parent link="extruder_sublink1"/>
+    <child link="extruder_sublink2"/>
+     <origin rpy="0 0 0" xyz="0 0 0"/> 
+    <axis xyz="0 1.0 0" />
+    <limit effort="1000" velocity="0.1" lower="${-plate_height/2}" upper="${plate_height/2}"/>
+  </joint>
+  
+  <joint name="base_link_to_extruder_link" type="prismatic">
+    <parent link="extruder_sublink2"/>
+    <child link="extruder_link"/>
+    <origin rpy="0 0 0" xyz="0 0 0.035"/> 
+    <axis xyz="0 0 1.0" />
+    <limit effort="1000" velocity="0.1" lower="0.0" upper="${lower_limit}"/>
+  </joint>
+
+</robot>
